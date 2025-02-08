@@ -923,7 +923,7 @@ export function ConsolePage() {
     <div data-component="ConsolePage">
       <div className="content-top">
         <div className="content-title">
-          <span>AI Voice Assistant</span>
+          <span>Voice AI Assistant</span>
         </div>
         <div className="content-api-key">
           {!LOCAL_RELAY_SERVER_URL && false && (
