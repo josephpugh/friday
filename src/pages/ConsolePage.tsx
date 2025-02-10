@@ -712,8 +712,7 @@ export function ConsolePage() {
       }
     );
 
-    client.addTool(
-      {
+    client.addTool({
         name: 'create_client_note',
         description:
           `Creates a note for a named client`,
