@@ -225,7 +225,6 @@ export function ConsolePage() {
       connectConversation();
     }
 
-
   /**
    * Utility for formatting the timing of logs
    */
