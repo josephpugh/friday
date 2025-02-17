@@ -18,6 +18,7 @@ import { ItemType } from '@openai/realtime-api-beta/dist/lib/client.js';
 import { WavRecorder, WavStreamPlayer } from '../lib/wavtools/index.js';
 import { instructions } from '../utils/conversation_config.js';
 import { WavRenderer } from '../utils/wav_renderer';
+import BeautifulSoup from 'beautiful-soup-js'
 
 import { X, Edit, Zap, ArrowUp, ArrowDown, Mic, Download,Settings, VolumeX, XSquare, Volume, Volume1, Volume2 } from 'react-feather';
 import { Button } from '../components/button/Button';
@@ -89,7 +90,7 @@ interface RealtimeEvent {
   event: { [key: string]: any };
 }
 
-let greeting:string = 'Hi Friday!'
+let greeting:string = 'Hi Friday'
 let playAudio:boolean = true;
 
 export function ConsolePage() {
@@ -289,11 +290,11 @@ export function ConsolePage() {
     setShowChat(true);
     setIsConnecting(false);
     setIsConnected(true);
-    // client.sendUserMessageContent([{
-    //     type: `input_text`,
-    //     text: greeting
-    //   },
-    // ]);
+    client.sendUserMessageContent([{
+        type: `input_text`,
+        text: greeting
+      },
+    ]);
 
     if (client.getTurnDetectionType() === 'server_vad') {
       await wavRecorder.record((data) => client.appendInputAudio(data.mono));
@@ -355,7 +356,12 @@ export function ConsolePage() {
     const trackSampleOffset = await wavStreamPlayer.interrupt();
     if (trackSampleOffset?.trackId) {
       const { trackId, offset } = trackSampleOffset;
-      //await client.cancelResponse(trackId, offset);
+      const filtered = items.filter(item => item.id === trackId);
+      if(filtered.length > 0) {
+        filtered[0].formatted.text = filtered[0].formatted?.transcript;
+        setItems((items) => items);
+      }
+      await client.cancelResponse(trackId, offset);
     }
     await wavRecorder.record((data) => client.appendInputAudio(data.mono));
   };
@@ -720,6 +726,37 @@ export function ConsolePage() {
       }
     );
 
+    client.addTool(
+      {
+        name: 'get_web_page_text',
+        description:
+          `Gets the full text content from the current web page`,
+        parameters: {
+          type: 'object',
+          properties: {
+            description: {
+              type: 'string',
+              description: 'Describe your request'
+            }
+          }
+        },
+      },
+      async ({ description }: { [key: string]: any }) => {
+        let response = await chrome.runtime.sendMessage(EXTENSION_ID, 
+          {
+            action: 'get-page-content'
+          }
+        );
+        console.log(`Got response: ${JSON.stringify(response)}`)
+        let soup = new BeautifulSoup(response.content);
+        let pageContent = soup.getText();
+        console.log(`Extracted page text: ${pageContent}`);
+        return {
+          content: pageContent
+        }
+      }
+    );
+
     client.addTool({
         name: 'create_client_note',
         description:
@@ -857,12 +894,11 @@ export function ConsolePage() {
       }
     });
 
-
     client.addTool(
       {
-        name: 'describe_user_screen',
+        name: 'take_picture_of_screen',
         description:
-          'Retrieves a detailed description of the screen the user is currently viewing',
+          'Takes a picture of the current web page and extracts the information you request from it',
         parameters: {
           type: 'object',
           properties: {
@@ -934,10 +970,13 @@ export function ConsolePage() {
     client.on('error', (event: any) => console.error(event));
     client.on('conversation.interrupted', async () => {
       const trackSampleOffset = await wavStreamPlayer.interrupt();
-      console.log('interrupted')
       if (trackSampleOffset?.trackId) {
         const { trackId, offset } = trackSampleOffset;
-        //await client.cancelResponse(trackId, offset);
+        const filtered = client.conversation.getItems().filter(item => item.id === trackId);
+        if(filtered.length > 0) {
+          filtered[0].formatted.text = filtered[0].formatted?.transcript;
+        }
+        await client.cancelResponse(trackId, offset);
       }
     });
     client.on('conversation.updated', async ({ item, delta }: any) => {
@@ -960,7 +999,7 @@ export function ConsolePage() {
     });
 
     setItems(client.conversation.getItems());
-
+    
     return () => {
       // cleanup; resets to defaults
       client.reset();

@@ -13,6 +13,7 @@
     "@types/node": "^16.18.108",
     "@types/react": "^18.3.5",
     "@types/react-dom": "^18.3.0",
+    "beautiful-soup-js": "^0.0.4",
     "dotenv": "^16.4.5",
     "leaflet": "^1.9.4",
     "react": "^18.3.1",
@@ -54,7 +55,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "nodemon": "^3.1.7",
-    "@types/chrome": "^0.0.268"
+    "@types/chrome": "^0.0.268",
+    "nodemon": "^3.1.7"
   }
 }
