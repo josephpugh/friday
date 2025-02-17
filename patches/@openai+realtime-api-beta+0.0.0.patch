@@ -1,0 +1,44 @@
+diff --git a/node_modules/@openai/realtime-api-beta/.DS_Store b/node_modules/@openai/realtime-api-beta/.DS_Store
+new file mode 100644
+index 0000000..86dd420
+Binary files /dev/null and b/node_modules/@openai/realtime-api-beta/.DS_Store differ
+diff --git a/node_modules/@openai/realtime-api-beta/dist/.DS_Store b/node_modules/@openai/realtime-api-beta/dist/.DS_Store
+new file mode 100644
+index 0000000..f9f60d0
+Binary files /dev/null and b/node_modules/@openai/realtime-api-beta/dist/.DS_Store differ
+diff --git a/node_modules/@openai/realtime-api-beta/lib/api.js b/node_modules/@openai/realtime-api-beta/lib/api.js
+index e522263..b325223 100644
+--- a/node_modules/@openai/realtime-api-beta/lib/api.js
++++ b/node_modules/@openai/realtime-api-beta/lib/api.js
+@@ -56,7 +56,8 @@ export class RealtimeAPI extends RealtimeEventHandler {
+    * @param {{model?: string}} [settings]
+    * @returns {Promise<true>}
+    */
+-  async connect({ model } = { model: 'gpt-4o-realtime-preview-2024-10-01' }) {
++ 
++  async connect({ model } = { model: 'gpt-4o-realtime-preview-2024-12-17' }) {
+     if (!this.apiKey && this.url === this.defaultUrl) {
+       console.warn(`No apiKey provided for connection to "${this.url}"`);
+     }
+@@ -113,7 +114,7 @@ export class RealtimeAPI extends RealtimeEventHandler {
+       const wsModule = await import(/* webpackIgnore: true */ moduleName);
+       const WebSocket = wsModule.default;
+       const ws = new WebSocket(
+-        'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-10-01',
++        'wss://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview-2024-12-17',
+         [],
+         {
+           finishRequest: (request) => {
+diff --git a/node_modules/@openai/realtime-api-beta/lib/client.js b/node_modules/@openai/realtime-api-beta/lib/client.js
+index 949a2bc..8335919 100644
+--- a/node_modules/@openai/realtime-api-beta/lib/client.js
++++ b/node_modules/@openai/realtime-api-beta/lib/client.js
+@@ -394,7 +394,7 @@ export class RealtimeClient extends RealtimeEventHandler {
+     if (this.isConnected()) {
+       throw new Error(`Already connected, use .disconnect() first`);
+     }
+-    await this.realtime.connect();
++    await this.realtime.connect({model: 'gpt-4o-realtime-preview-2024-12-17'});
+     this.updateSession();
+     return true;
+   }
