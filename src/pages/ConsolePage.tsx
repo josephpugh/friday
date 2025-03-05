@@ -19,6 +19,7 @@ import { WavRecorder, WavStreamPlayer } from '../lib/wavtools/index.js';
 import { instructions } from '../utils/conversation_config.js';
 import { WavRenderer } from '../utils/wav_renderer';
 import BeautifulSoup from 'beautiful-soup-js'
+import { Tooltip as ReactTooltip } from "react-tooltip";
 
 import { X, Edit, Zap, ArrowUp, ArrowDown, Mic, Download,Settings, VolumeX, XSquare, Volume, Volume1, Volume2 } from 'react-feather';
 import { Button } from '../components/button/Button';
@@ -33,7 +34,7 @@ import welcome from '../images/welcome-sign.png'
 const EXTENSION_ID = 'eokgnmokjnaphdknelmcimkbbchkfmcf';
 
 const client_info = `Client Information:
-Andy (55 years old), annual income = $60,000, 401k = $125,000
+Andy (45 years old), annual income = $60,000, 401k = $125,000
 Value of home = $250,000, mortgage = $65,000
 No consumer debt
 Monthly expenses = $3,500
@@ -288,6 +289,7 @@ export function ConsolePage() {
     await client.connect();
     setShowSplash(false);
     setShowChat(true);
+    setShowMap(true);
     setIsConnecting(false);
     setIsConnected(true);
     client.sendUserMessageContent([{
@@ -314,6 +316,7 @@ export function ConsolePage() {
     setIsConnected(false);
     setShowSplash(true);
     setShowChat(false);
+    setShowMap(false);
     setRealtimeEvents([]);
     setItems([]);
     setMemoryKv({});
@@ -1041,32 +1044,46 @@ export function ConsolePage() {
         <div className="content-top-left">
           <Button
               label={''}
+              data-tooltip-id="my-tooltip-1"
               disabled={false}
               iconPosition={'only'}
-              icon={Edit}
+              icon={Edit}       
               buttonStyle={'flush'}
           />
           <Toggle
               defaultValue={'voice'}
-              disabled={false}
+              disabled={true}
               labels={['voice', 'text']}
               values={['voice', 'text']}
+          />
+          <ReactTooltip
+            id="my-tooltip-1"
+            place="bottom-end"
+            content="New Chat"
+            variant='dark'
           />
         </div>
         <div className='content-top-right'>
           <Button
             label={''}
-            disabled={true}
+            disabled={false}
             iconPosition={'only'}
-            icon={Download}
+            icon={Volume2}
             buttonStyle={'flush'}
           />
           <Button
             label={''}
+            data-tooltip-id="my-tooltip-2"
             disabled={false}
             iconPosition={'only'}
             icon={Settings}
             buttonStyle={'flush'}
+          />
+            <ReactTooltip
+            id="my-tooltip-2"
+            place="bottom-start"
+            content="Settings"
+            variant='dark'
           />
       </div>
       </div>

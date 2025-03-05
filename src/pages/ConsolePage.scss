@@ -32,7 +32,7 @@
     background-size: 100% 370px;
     background-position: bottom;
     border-radius: 16px;
-    margin-top: 80px;
+    margin-top: 70px;
     overflow: hidden;
     text-align: center;
   }
@@ -186,7 +186,7 @@
        
       }
       &.map {
-        height: 760px;
+        height: 560px;
       }
     }
     .content-right {
@@ -258,9 +258,9 @@
       }
       .events {
         border-top: 1px solid #e7e7e7;
-        height: 160px;
-        max-height: 160px;
-        min-height: 160px;
+        height: 130px;
+        max-height: 130px;
+        min-height: 130px;
       }
       .conversation {
         display: flex;
